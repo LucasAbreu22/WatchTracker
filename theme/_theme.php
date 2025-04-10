@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?= $title; ?></title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <link rel="icon" type="image/x-icon" href="<?= url("/theme/assets/img/icon-SAAGI.png"); ?>">
+
+    <link rel="stylesheet" href="<?= url("/theme/assets/css/plugin/fonts-awesome.all.min.css") ?>">
 
     <script src="<?= url("/theme/assets/js/jquery.js"); ?>"></script>
     <script src="<?= url("/theme/assets/js/modais.js"); ?>"></script>

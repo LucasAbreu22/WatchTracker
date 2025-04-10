@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendário Dinâmico</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .calendar-container {
+        width: 300px;
+        margin: 20px auto;
+        text-align: center;
+      }
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        text-align: center;
+      }
+      .day {
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .prev-month,
+      .next-month {
+        color: gray;
+      }
+      .dropdown {
+        display: none;
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 180px;
+        text-align: center;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .month-option {
+        padding: 5px;
+        cursor: pointer;
+      }
+      .month-option:hover {
+        background: #007bff;
+        color: white;
+      }
+      .year-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+      .year-btn {
+        cursor: pointer;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button id="prev">◄</button>
+        <span id="monthYear"></span>
+        <button id="next">►</button>
+      </div>
+      <div class="calendar-grid" id="calendar"></div>
+    </div>
+
+    <div class="dropdown" id="monthDropdown">
+      <div class="year-controls">
+        <span class="year-btn" id="prevYear">◄</span>
+        <span id="dropdownYear"></span>
+        <span class="year-btn" id="nextYear">►</span>
+      </div>
+      <div id="monthsList"></div>
+    </div>
+
+    <script>
+      const monthNames = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro",
+      ];
+      let currentDate = new Date();
+
+      function renderCalendar() {
+        const calendar = document.getElementById("calendar");
+        const monthYear = document.getElementById("monthYear");
+        const dropdownYear = document.getElementById("dropdownYear");
+
+        let year = currentDate.getFullYear();
+        let month = currentDate.getMonth();
+
+        monthYear.textContent = `${monthNames[month]} ${year}`;
+        dropdownYear.textContent = year;
+
+        calendar.innerHTML = "";
+
+        let firstDayOfMonth = new Date(year, month, 1).getDay();
+        let lastDateOfMonth = new Date(year, month + 1, 0).getDate();
+        let lastDateOfPrevMonth = new Date(year, month, 0).getDate();
+
+        let days = [];
+
+        for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+          days.push({ day: lastDateOfPrevMonth - i, class: "prev-month" });
+        }
+
+        for (let i = 1; i <= lastDateOfMonth; i++) {
+          days.push({ day: i, class: "current-month" });
+        }
+
+        let nextMonthDays = 42 - days.length;
+        for (let i = 1; i <= nextMonthDays; i++) {
+          days.push({ day: i, class: "next-month" });
+        }
+
+        days.forEach((d) => {
+          let div = document.createElement("div");
+          div.textContent = d.day;
+          div.className = `day ${d.class}`;
+          calendar.appendChild(div);
+        });
+      }
+
+      function openDropdown() {
+        const dropdown = document.getElementById("monthDropdown");
+        dropdown.style.display = "block";
+        dropdown.style.top = event.clientY + "px";
+        dropdown.style.left = event.clientX + "px";
+      }
+
+      function closeDropdown(event) {
+        const dropdown = document.getElementById("monthDropdown");
+        if (
+          !dropdown.contains(event.target) &&
+          event.target.id !== "monthYear"
+        ) {
+          dropdown.style.display = "none";
+        }
+      }
+
+      function setupMonthsDropdown() {
+        const monthsList = document.getElementById("monthsList");
+        monthsList.innerHTML = "";
+
+        monthNames.forEach((month, index) => {
+          let div = document.createElement("div");
+          div.textContent = month;
+          div.className = "month-option";
+          div.onclick = () => {
+            currentDate.setMonth(index);
+            renderCalendar();
+            document.getElementById("monthDropdown").style.display = "none";
+          };
+          monthsList.appendChild(div);
+        });
+      }
+
+      document
+        .getElementById("monthYear")
+        .addEventListener("click", (event) => {
+          openDropdown(event);
+          setupMonthsDropdown();
+        });
+
+      document.getElementById("prev").addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+      });
+
+      document.getElementById("next").addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+      });
+
+      document.getElementById("prevYear").addEventListener("click", () => {
+        currentDate.setFullYear(currentDate.getFullYear() - 1);
+        renderCalendar();
+      });
+
+      document.getElementById("nextYear").addEventListener("click", () => {
+        currentDate.setFullYear(currentDate.getFullYear() + 1);
+        renderCalendar();
+      });
+
+      document.addEventListener("wheel", (event) => {
+        if (
+          document.getElementById("monthDropdown").style.display === "block"
+        ) {
+          /* event.preventDefault(); */
+          let delta = event.deltaY > 0 ? 1 : -1;
+          currentDate.setFullYear(currentDate.getFullYear() + delta);
+          renderCalendar();
+        }
+      });
+
+      document.addEventListener("click", closeDropdown);
+      renderCalendar();
+    </script>
+  </body>
+</html>
