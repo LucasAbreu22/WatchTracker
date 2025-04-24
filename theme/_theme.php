@@ -62,7 +62,7 @@
         });
     });
 </script>
-<?= $this->section("js"); ?>
 <script src="<?= url("/theme/assets/js/index.js") ?>"></script>
+<?= $this->section("js"); ?>
 
 </html>

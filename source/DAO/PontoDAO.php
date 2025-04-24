@@ -2,11 +2,11 @@
 
 namespace Source\DAO;
 
-use CoffeeCode\DataLayer\Connect;
 use Exception;
 use PDO;
+use Source\Connect;
 
-class AtividadeDAO
+class PontoDAO
 {
 
     private $connect;
@@ -15,16 +15,16 @@ class AtividadeDAO
     public function __construct()
     {
         $this->connect = Connect::getInstance();
-        $this->error = Connect::getError();
     }
 
-    public function select()
+    public function getPontos($periodo)
     {
         try {
-            $sql = "SELECT * FROM exemplo WHERE 1=1 AND visibilidade = true";
+            $sql = "SELECT * FROM pontos_batidos WHERE dia >= ? AND dia <= ? ORDER BY dia ASC, horario ASC";
 
             $stmt = $this->connect->prepare($sql);
-
+            $stmt->bindValue(1, $periodo["inicio_periodo"], PDO::PARAM_STR);
+            $stmt->bindValue(2, $periodo["final_periodo"], PDO::PARAM_STR);
             /* $stmt->debugDumpParams(); */
             $stmt->execute();
             return $stmt->fetchAll();

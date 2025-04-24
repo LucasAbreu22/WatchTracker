@@ -24,6 +24,8 @@ $router->namespace("Source\App");
 
 $router->group(null);
 $router->get("/", "Web:home");
+$router->post("/getPontos", "Pontos:getPontos");
+$router->post("/calcularDia", "Pontos:calcularDia");
 
 /* ROTA DE ERRO */
 $router->group("error");

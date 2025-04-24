@@ -3,11 +3,11 @@
 // define("URL_BASE", "http://10.120.1.125/WatchTracker");
 define("URL_BASE", "http://localhost/WatchTracker");
 
-define("DATA_LAYER_CONFIG", [
+define("CONNECT_CONFIG", [
     "driver" => "mysql",
     "host" => "localhost",
     "port" => "3306",
-    "dbname" => "WatchTracker",
+    "dbname" => "watchtracker",
     "username" => "root",
     "passwd" => "",
     "options" => [

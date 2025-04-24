@@ -3,7 +3,7 @@
 <div id="cabecalho">
     <div id="mes_nav">
         <button id="prev">◄</button>
-        <h2 id="monthYear">Junho/2025</h2>
+        <h1 id="monthYear">Junho/2025</h1>
         <button id="next">►</button>
 
     </div>
@@ -17,38 +17,40 @@
     </div>
     <div id="resumo_mes">
         <div id="horas_trabalho">
-            <div><b>Horas trabalhadas no mês</b></div>
+            <h1>Horas trabalhadas no mês</h1>
             <div class="calculadas"><span>Previstas: 176h</span><span>Efetivas: 186h</span></div>
         </div>
         <div id="horas_saldo">
-            <div><b>Horas trabalhadas no mês</b></div>
+            <h1>Horas trabalhadas no mês</h1>
             <div class="calculadas"><span>Previstas: 176h</span><span>Efetivas: 186h</span></div>
         </div>
     </div>
-    <a href="#">Configurações</a>
+    <a href="#">
+        <h2>Configurações</h2>
+    </a>
 </div>
 <table id="dias_calendario">
     <thead id="dia_coluna">
         <th>
-            <h2>Dom</h2>
+            <h1>Dom</h1>
         </th>
         <th>
-            <h2>Seg</h2>
+            <h1>Seg</h1>
         </th>
         <th>
-            <h2>Ter</h2>
+            <h1>Ter</h1>
         </th>
         <th>
-            <h2>Qua</h2>
+            <h1>Qua</h1>
         </th>
         <th>
-            <h2>Qui</h2>
+            <h1>Qui</h1>
         </th>
         <th>
-            <h2>Sex</h2>
+            <h1>Sex</h1>
         </th>
         <th>
-            <h2>Sab</h2>
+            <h1>Sab</h1>
         </th>
     </thead>
     <tbody id="calendar">
@@ -235,9 +237,12 @@
         "Novembro",
         "Dezembro",
     ];
-    let currentDate = new Date();
 
-    function renderCalendar() {
+    let currentDate = new Date();
+    let pontosMes = [];
+
+    async function renderCalendar() {
+        mostrarLoading();
 
         const $calendar = $("#calendar");
         const $monthYear = $("#monthYear");
@@ -245,7 +250,6 @@
 
         let year = currentDate.getFullYear();
         let month = currentDate.getMonth();
-
 
         monthYear.textContent = `${monthNames[month]}/${year}`;
         dropdownYear.textContent = year;
@@ -283,6 +287,9 @@
         let index = 1;
 
         let card_day = ""
+
+        pontosMes = await getPontos(month, year);
+
         days.forEach((d) => {
             if (index === 1) {
                 card_day += "<tr>";
@@ -301,31 +308,64 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="pontos_batidos">
-                        <div>
-                            <span>Entrada:</span>
-                            <span>09:00</span>
-                        </div>
-                        <div>
-                            <span>Intervalo:</span>
-                            <span>13:00</span>
-                        </div>
-                        <div>
-                            <span>Entrada:</span>
-                            <span>09:00</span>
-                        </div>
-                        <div>
-                            <span>Intervalo:</span>
-                            <span>13:00</span>
-                        </div>
-                        <div>
-                            <span>Entrada:</span>
-                            <span>09:00</span>
-                        </div>
-                        <div>
-                            <span>Intervalo:</span>
-                            <span>13:00</span>
-                        </div>
+                    <div class="pontos_batidos">`;
+
+            if (pontosMes.length > 0) {
+                // Agrupa os pontos por dia (formato YYYY-MM-DD)
+                const pontosPorDia = {};
+                pontosMes.forEach(ponto => {
+                    if (!pontosPorDia[ponto.dia]) {
+                        pontosPorDia[ponto.dia] = [];
+                    }
+                    pontosPorDia[ponto.dia].push(ponto);
+                });
+
+                // Determina o mês e ano reais do dia atual (caso seja de outro mês)
+                let realMonth = month;
+                let realYear = year;
+
+                if (d.class === "prev-month") {
+                    realMonth = month - 1;
+                    if (realMonth < 0) {
+                        realMonth = 11;
+                        realYear -= 1;
+                    }
+                } else if (d.class === "next-month") {
+                    realMonth = month + 1;
+                    if (realMonth > 11) {
+                        realMonth = 0;
+                        realYear += 1;
+                    }
+                }
+
+                // Formata corretamente a data do dia atual
+                const diaFormatado = `${realYear}-${String(realMonth + 1).padStart(2, "0")}-${String(d.day).padStart(2, "0")}`;
+                const pontosDoDia = pontosPorDia[diaFormatado];
+
+                if (pontosDoDia && pontosDoDia.length > 0) {
+                    // Ordena os pontos do dia por horário
+                    pontosDoDia.sort((a, b) => a.horario.localeCompare(b.horario));
+
+                    pontosDoDia.forEach((ponto, idx) => {
+                        let evento = "Entrada";
+
+                        if (ponto.intervalo === 1) {
+                            evento = idx % 2 === 1 ? "Intervalo" : "Ret. Inter.";
+                        } else {
+                            evento = idx % 2 === 0 ? "Entrada" : "Saída";
+                        }
+
+                        card_day += `
+                <div>
+                    <span>${evento}:</span>
+                    <span class="horario">${ponto.horario}</span>
+                </div>`;
+                    });
+                }
+            }
+
+
+            card_day += `
                     </div>
                 </div>
             </td>`
@@ -339,6 +379,11 @@
             }
             index++
         });
+
+        setTimeout(() => {
+
+            ocultarLoading();
+        }, 300);
     }
 
     function openDropdown(event) {
@@ -346,7 +391,6 @@
         const $monthYear = $("#monthYear");
 
         const offset = $monthYear.offset();
-
         $dropdown.css({
             display: "block",
             top: offset.top + 50 + "px",
@@ -381,6 +425,70 @@
         });
     }
 
+    async function getPontos(mes, ano) {
+        let callback = [];
+        await $.ajax({
+            type: "POST",
+            url: "<?= url("/getPontos") ?>",
+            data: {
+                mes: mes,
+                ano: ano
+            },
+            dataType: "json",
+            success: function(response) {
+
+                if (response.hasOwnProperty("message") && response.message.indexOf("<br>[ERRO]") === 0) {
+                    show({
+                        title: "Carregamento de Pontos",
+                        msg: response.message
+                    });
+
+                    return false;
+                }
+
+
+                callback = response;
+            }
+        });
+
+        return callback;
+    }
+
+    async function calcularDia(date) {
+        const pontos = pontosMes.filter(item => {
+            const itemDate = new Date(item.dia);
+            const itemFormatted = itemDate.toISOString().split("T")[0]; // yyyy-mm-dd
+            return itemFormatted === date;
+        });
+
+
+        let callback = [];
+
+        await $.ajax({
+            type: "POST",
+            url: "<?= url("/calcularDia") ?>",
+            data: {
+                pontos: pontos
+            },
+            dataType: "json",
+            success: function(response) {
+
+                if (response.hasOwnProperty("message") && response.message.indexOf("<br>[ERRO]") === 0) {
+                    show({
+                        title: "Inclusão de usuário",
+                        msg: response.message
+                    });
+
+                    return false;
+                }
+
+                callback = response;
+            }
+        });
+
+        return callback;
+    }
+
     $(document).ready(function() {
 
         $("#monthYear").on("click", function(event) {
@@ -388,37 +496,64 @@
             setupMonthsDropdown();
         });
 
-        $(".dia_numero").on("mouseenter", function() {
+        $("#calendar").on("mouseenter", ".dia_numero", async function() {
+            let dia = this.textContent.trim();
+            let month_day = currentDate.getMonth() + 1;
+            let ano = currentDate.getFullYear();
+
+            if ($(this).closest(".prev-month").length > 0) {
+                month_day--;
+                if (month_day == 0) {
+                    month_day = 12
+                    ano = currentDate.getFullYear() - 1;
+                }
+
+            } else if ($(this).closest(".next-month").length > 0) {
+                month_day++;
+                if (month_day == 13) {
+                    month_day = 1
+                    ano = currentDate.getFullYear() + 1;
+                }
+            }
+
+            month_day = month_day < 10 ? `0${month_day}` : month_day;
+            dia = dia < 10 ? `0${dia}` : dia;
+
+            let date = `${ano}-${month_day}-${dia}`;
+
+            let horarios = await calcularDia(date);
+
             const rect = this.getBoundingClientRect();
             const popup_dia = $("#popup_dia");
 
-            const html = `    
+            let html = `    
             <div class="content">
-                <h2>Consolidação do dia ${this.innerHTML}</h2>
+                <h2>Consolidação do dia ${ this.textContent.trim()}</h2>
+                <div>`;
 
-                <div>
-                    <span>Tempo trabalhado: 03h32</span>
-                    <span> Tempo a trabalhar: 04h28</span>
-                    <span> Intervalo cumprido: 13:00 - 14:00</span>
+            html += `
+                    <span>Tempo trabalhado: ${horarios.tempo_trabalhado}</span>
+                    <span> Tempo a trabalhar: 4h28</span>
+                    <span> Intervalo cumprido: ${horarios.tempo_intervalo}</span>
                 </div>
                 <table>
-                    <tr>
-                        <td><span>10:20</span></td>
-                        <td><span>13:06</span></td>
-                        <td><span>01h46 Período trabalho</span></td>
-                    </tr>
-                    <tr>
-                        <td><span>10:20</span></td>
-                        <td><span>13:06</span></td>
-                        <td><span>01h46 Período trabalho</span></td>
-                    </tr>
-                    <tr>
-                        <td><span>10:20</span></td>
-                        <td><span>13:06</span></td>
-                        <td><span>01h46 Período trabalho</span></td>
-                    </tr>
+            `;
+
+            horarios.periodos.forEach((row, idx) => {
+                let evento = idx % 2 === 0 ? "Período trabalhado" : "Perído afastado";
+                const clss = evento === "Perído afastado" ? "afastamento" : "";
+                html += `
+                <tr class=${clss}>
+                    <td><span>${row.periodo[0]}</span></td>
+                    <td><span>${row.periodo[1]}</span></td>
+                    <td><span>${row.tempo} ${evento}</span></td>
+                </tr>`;
+            });
+
+            html += `
                 </table>
             </div>`;
+
             popup_dia.html(html);
             popup_dia.css({
                 display: "block",
@@ -428,7 +563,7 @@
             });
         });
 
-        $(".dia_numero").on("mouseleave", function() {
+        $("#calendar").on("mouseleave", ".dia_numero", function() {
             const popup_dia = $("#popup_dia");
 
             const html = "";
