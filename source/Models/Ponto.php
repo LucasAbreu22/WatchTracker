@@ -101,7 +101,6 @@ class Ponto
     {
 
         try {
-            //code...
             $tempo_trabalhado = "00:00";
             $tempo_trabalhar = "00:00";
             $tempo_intervalo = "00:00";

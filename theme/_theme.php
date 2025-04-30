@@ -63,6 +63,7 @@
     });
 </script>
 <script src="<?= url("/theme/assets/js/index.js") ?>"></script>
+<script src="<?= url("/theme/assets/js/jquery.mask.js") ?>"></script>
 <?= $this->section("js"); ?>
 
 </html>

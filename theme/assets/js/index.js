@@ -38,4 +38,6 @@ $(document).ready(function () {
       $(".select2-search__field").val(event.key);
     }
   });
+
+  $("input").attr("autocomplete", "off");
 });
