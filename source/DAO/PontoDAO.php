@@ -33,6 +33,30 @@ class PontoDAO
         }
     }
 
+    public function getDetalhesDia($data)
+    {
+        try {
+            $sql = "SELECT 
+            pb.id, pb.dia, pb.horario, pb.intervalo, 
+            op.id as id_observacao, op.abono, op.observacao,
+            op.periodo_ini, op.periodo_fim, op.tempo
+            FROM pontos_batidos pb 
+            LEFT JOIN observacao_ponto op 
+            ON pb.id = op.id_ponto 
+            WHERE 
+            dia = ? 
+            ORDER BY horario ASC";
+
+            $stmt = $this->connect->prepare($sql);
+            $stmt->bindValue(1, $data, PDO::PARAM_STR);
+            /* $stmt->debugDumpParams(); */
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\Throwable $e) {
+            throw new Exception("<br>[ERRO][Atividade 05] " . $e->getMessage());
+        }
+    }
+
     public function criar(string $exemplo)
     {
         try {

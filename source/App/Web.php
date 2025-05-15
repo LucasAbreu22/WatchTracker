@@ -30,4 +30,20 @@ class Web
             "title" => "Home",
         ]);
     }
+
+    public function configuracoes($data): void
+    {
+
+        echo $this->view->render("configuracoes", [
+            "title" => "Login",
+        ]);
+    }
+
+    public function login($data): void
+    {
+
+        echo $this->view->render("login", [
+            "title" => "Login",
+        ]);
+    }
 }

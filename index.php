@@ -26,6 +26,13 @@ $router->group(null);
 $router->get("/", "Web:home");
 $router->post("/getPontos", "Pontos:getPontos");
 $router->post("/calcularDia", "Pontos:calcularDia");
+$router->post("/getDetalhes", "Pontos:getDetalhes");
+
+$router->group("configuracoes");
+$router->get("/", "Web:configuracoes");
+
+$router->group("login");
+$router->get("/", "Web:login");
 
 /* ROTA DE ERRO */
 $router->group("error");

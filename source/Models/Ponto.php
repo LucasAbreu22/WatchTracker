@@ -146,4 +146,23 @@ class Ponto
             throw new Exception("<br>[ERRO][Atividade 06] " . $e->getMessage());
         }
     }
+
+    public function getDetalhes(string $data)
+    {
+        try {
+            $pontoDAO = new PontoDAO();
+
+            $detalhesList = $pontoDAO->getDetalhesDia($data);
+
+            foreach ($detalhesList as $detalhe) {
+                $detalhe->tempo = $detalhe->tempo ? date('H:i', strtotime($detalhe->tempo)) : $detalhe->tempo;
+                $detalhe->periodo_ini = $detalhe->periodo_ini ? date('H:i', strtotime($detalhe->periodo_ini)) : $detalhe->periodo_ini;
+                $detalhe->periodo_fim = $detalhe->periodo_fim ? date('H:i', strtotime($detalhe->periodo_fim)) : $detalhe->periodo_fim;
+            }
+
+            return $detalhesList;
+        } catch (\Throwable $e) {
+            throw new Exception("<br>[ERRO][Atividade 07] " . $e->getMessage());
+        }
+    }
 }

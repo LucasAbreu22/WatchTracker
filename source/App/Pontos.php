@@ -34,4 +34,18 @@ class Pontos
             echo json_encode(["message" => $e->getMessage()]);
         }
     }
+
+    public function getDetalhes($param): void
+    {
+        try {
+
+            $ponto = new Ponto();
+
+            $callback = $ponto->getDetalhes($param["date"]);
+
+            echo json_encode($callback);
+        } catch (\Throwable $e) {
+            echo json_encode(["message" => $e->getMessage()]);
+        }
+    }
 }
