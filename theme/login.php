@@ -12,7 +12,7 @@
             <label for="senha">Senha</label><br>
             <input type="password" name="senha" id="senha" required>
         </div>
-
+        <a href="<?= url("/login/criarConta") ?>">Criar conta?</a>
         <div class="button-container">
             <button>Logar</button>
         </div>

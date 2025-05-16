@@ -33,6 +33,9 @@ $router->get("/", "Web:configuracoes");
 
 $router->group("login");
 $router->get("/", "Web:login");
+$router->get("/logar", "Logins:logar");
+$router->get("/criarConta", "Web:criarConta");
+$router->post("/criarConta", "Logins:criarConta");
 
 /* ROTA DE ERRO */
 $router->group("error");

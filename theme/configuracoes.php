@@ -19,7 +19,7 @@
                 </div>
                 <div>
                     <label for="cpf">CPF</label><br>
-                    <input type="text" name="cpf" id="cpf" required>
+                    <input class="CPF" type="text" name="cpf" id="cpf" required>
                 </div>
             </div>
             <div>

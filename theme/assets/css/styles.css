@@ -796,7 +796,6 @@ ul {
 }
 
 .content-login {
-  height: 295px;
   width: 330px;
   position: absolute;
   top: 45%;
@@ -813,4 +812,8 @@ ul {
 }
 .content-login input {
   width: 100%;
+}
+.content-login a {
+  font-size: 14px;
+  text-decoration: underline;
 }

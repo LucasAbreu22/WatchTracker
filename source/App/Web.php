@@ -46,4 +46,21 @@ class Web
             "title" => "Login",
         ]);
     }
+
+    public function criarConta($data): void
+    {
+
+        echo $this->view->render("criarConta", [
+            "title" => "criarConta",
+        ]);
+    }
+
+    public function error($data): void
+    {
+
+        echo $this->view->render("error", [
+            "title" => "Erro",
+            "error" => $data["errcode"]
+        ]);
+    }
 }
