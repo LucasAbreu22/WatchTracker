@@ -36,17 +36,12 @@ function checkRouteSession()
         case 'route=/login': // CASO A ROTA SEJA DE LOGIN
             // VERIFIQUE SE EXISTE A SESSÃO USUÁRIO
             // SE EXISTIR, REDIRECIONE PARA A HOME DO SISTEMA. SE NÃO RETORNE NADA
-            return isset($_SESSION["usuario"]) ? redirect(url("/painel")) : false;
-
-        case '': // CASO A ROTA SEJA A RAIZ, FAÇA NADA
-
-        case 'route=/contato': // CASO A ROTA SEJA A DE CONTATO, FAÇA NADA            
-            break;
+            return isset($_SESSION["id_usuario"]) ? redirect(url("/painel")) : false;
 
         default: // CASO A ROTA SEJA QUALQUER OUTRA
             // VERIFIQUE SE EXISTE A SESSÃO USUÁRIO
             // SE NÃO EXISTIR, REDIRECIONE PARA A PÁGINA DE LOGIN DO SISTEMA. SE NÃO RETORNE NADA
-            return !isset($_SESSION["usuario"]) ? redirect(url("/login")) :  true;
+            return !isset($_SESSION["id_usuario"]) ? redirect(url("/login")) :  true;
             break;
     }
 }
