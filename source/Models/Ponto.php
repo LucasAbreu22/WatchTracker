@@ -25,7 +25,7 @@ class Ponto
 
     public function setIdPonto(int $param)
     {
-        if ($param < 0) throw new Exception("<br>[ERRO][Ponto Clss 01] Informação de ID inválida!");
+        if ($param < 0) throw new Exception("[ERRO][Ponto Clss 01] Informação de ID inválida!");
 
         $this->id = $param;
     }
@@ -37,7 +37,7 @@ class Ponto
 
     public function setHorario(string $param)
     {
-        if (empty($param)) throw new Exception("<br>[ERRO][Ponto Clss 02] Informação de Horário vazia!");
+        if (empty($param)) throw new Exception("[ERRO][Ponto Clss 02] Informação de Horário vazia!");
 
         $this->horario = $param;
     }
@@ -49,7 +49,7 @@ class Ponto
 
     public function setDia(string $param)
     {
-        if (empty($param)) throw new Exception("<br>[ERRO][Ponto Clss 03] Informação de DIA vazia!");
+        if (empty($param)) throw new Exception("[ERRO][Ponto Clss 03] Informação de DIA vazia!");
 
         $this->dia = $param;
     }
@@ -67,8 +67,8 @@ class Ponto
     public function getPontos($param)
     {
 
-        if (!isset($param["mes"]) || $param["mes"] < 0) throw new Exception("<br>[ERRO][Ponto Clss 04] Informação de MÊS inválida!");
-        if (!isset($param["ano"]) || $param["ano"] < 1950) throw new Exception("<br>[ERRO][Ponto Clss 05] Informação de ANO inválida!");
+        if (!isset($param["mes"]) || $param["mes"] < 0) throw new Exception("[ERRO][Ponto Clss 04] Informação de MÊS inválida!");
+        if (!isset($param["ano"]) || $param["ano"] < 1950) throw new Exception("[ERRO][Ponto Clss 05] Informação de ANO inválida!");
         $PontoDAO = new PontoDAO;
         return $PontoDAO->getPontos($this->criarPeriodo($param["mes"], $param["ano"]));
     }
@@ -143,7 +143,7 @@ class Ponto
 
             return ["periodos" => $periodos, "tempo_intervalo" => $tempo_intervalo, "tempo_trabalhado" => $tempo_trabalhado];
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 06] " . $e->getMessage());
+            throw new Exception("[ERRO][Atividade 06] " . $e->getMessage());
         }
     }
 
@@ -162,7 +162,7 @@ class Ponto
 
             return $detalhesList;
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 07] " . $e->getMessage());
+            throw new Exception("[ERRO][Atividade 07] " . $e->getMessage());
         }
     }
 }

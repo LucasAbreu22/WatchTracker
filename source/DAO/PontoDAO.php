@@ -29,7 +29,7 @@ class PontoDAO
             $stmt->execute();
             return $stmt->fetchAll();
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 01] " . $e->getMessage());
+            throw new Exception("[ERRO][Atividade 01] " . $e->getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ class PontoDAO
             $stmt->execute();
             return $stmt->fetchAll();
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 05] " . $e->getMessage());
+            throw new Exception("[ERRO][Atividade 05] " . $e->getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ class PontoDAO
 
             return true;
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 02] " . $e->getMessage());
+            throw new Exception("[ERRO][Atividade 02] " . $e->getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ class PontoDAO
 
             return true;
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 03] " . $e->getMessage());
+            throw new Exception("[ERRO][Atividade 03] " . $e->getMessage());
         }
     }
 
@@ -106,7 +106,7 @@ class PontoDAO
 
             return true;
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 04] " . $e->getMessage());
+            throw new Exception("[ERRO][Atividade 04] " . $e->getMessage());
         }
     }
 }

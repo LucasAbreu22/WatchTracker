@@ -29,7 +29,7 @@ class UsuarioDAO
             $stmt->execute();
             return $stmt->fetchAll();
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 01] " . $e->getMessage());
+            throw new Exception("[ERRO][Usuario DAO 01] " . $e->getMessage());
         }
     }
 
@@ -44,7 +44,22 @@ class UsuarioDAO
             $stmt->execute();
             return $stmt->fetch();
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 05] " . $e->getMessage());
+            throw new Exception("[ERRO][Usuario DAO 05] " . $e->getMessage());
+        }
+    }
+
+    public function getUsuarioByCpf(string $cpf)
+    {
+        try {
+            $sql = "SELECT * FROM usuario WHERE cpf = ? ";
+
+            $stmt = $this->connect->prepare($sql);
+            $stmt->bindValue(1, $cpf, PDO::PARAM_STR);
+            /* $stmt->debugDumpParams(); */
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Usuario DAO 06] " . $e->getMessage());
         }
     }
 
@@ -66,10 +81,27 @@ class UsuarioDAO
 
             return true;
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 02] " . $e->getMessage());
+            throw new Exception("[ERRO][Usuario DAO 02] " . $e->getMessage());
         }
     }
 
+    public function atualizarSenha(int $id_usuario, string $senha)
+    {
+        try {
+            $sql = "UPDATE usuario SET senha = ? WHERE id_usuario = ?";
+
+            $stmt = $this->connect->prepare($sql);
+
+            /* $stmt->debugDumpParams(); */
+            $stmt->bindValue(1, $senha, PDO::PARAM_STR);
+            $stmt->bindValue(2, $id_usuario, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return true;
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Usuario DAO 07] " . $e->getMessage());
+        }
+    }
     public function editar(int $id_exemplo, string $exemplo)
     {
         try {
@@ -84,7 +116,7 @@ class UsuarioDAO
 
             return true;
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 03] " . $e->getMessage());
+            throw new Exception("[ERRO][Usuario DAO 03] " . $e->getMessage());
         }
     }
 
@@ -101,7 +133,7 @@ class UsuarioDAO
 
             return true;
         } catch (\Throwable $e) {
-            throw new Exception("<br>[ERRO][Atividade 04] " . $e->getMessage());
+            throw new Exception("[ERRO][Usuario DAO 04] " . $e->getMessage());
         }
     }
 }

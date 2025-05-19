@@ -39,13 +39,13 @@
         $("form").submit((e) => {
             e.preventDefault();
 
-            criarConta();
+            criarUsuario();
         });
     });
 
 
-    async function criarConta() {
-        // mostrarLoading();
+    async function criarUsuario() {
+        mostrarLoading();
 
         let nome = $("#nome").val().trim();
         let cpf = $("#cpf").val().trim();
@@ -76,7 +76,7 @@
 
         await $.ajax({
             type: "POST",
-            url: "<?= url("/login/criarConta") ?>",
+            url: "<?= url("/login/criarUsuario") ?>",
             data: {
                 nome: nome,
                 cpf: cpf,
@@ -86,17 +86,13 @@
             },
             dataType: "json",
             success: function(response) {
+                alert(response.message);
 
-                if (response.hasOwnProperty("message") && response.message.indexOf("<br>[ERRO]") === 0) {
-                    alert(response.message);
-
-                    return false;
-                }
-                alert(response);
-
-                window.location.href = "<?= url("/login"); ?>";
+                if (response.message.indexOf("[ERRO]") !== 0) window.location.href = "<?= url("/login"); ?>";
             }
         });
+        ocultarLoading();
+
     }
 </script>
 <?php $this->end("js"); ?>

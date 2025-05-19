@@ -6,15 +6,19 @@ use Source\Models\Login;
 
 class Logins
 {
-    public function getLogin($param): void
+    public function logar($param): void
     {
         try {
+            $login = new Login();
+            $login->setEmail($param["email"]);
+            $login->setSenha($param["senha"]);
+            echo json_encode($login->logar());
         } catch (\Throwable $e) {
             echo json_encode(["message" => $e->getMessage()]);
         }
     }
 
-    public function criarConta($param): void
+    public function criarUsuario($param): void
     {
         try {
             $login = new Login();
@@ -24,7 +28,7 @@ class Logins
             $login->setNome($param["nome"]);
             $login->setSenha($param["senha"]);
 
-            $callback = $login->criarConta();
+            $callback = $login->criarUsuario();
 
             echo json_encode($callback);
         } catch (\Throwable $e) {

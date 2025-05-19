@@ -608,7 +608,7 @@
             dataType: "json",
             success: function(response) {
 
-                if (response.hasOwnProperty("message") && response.message.indexOf("<br>[ERRO]") === 0) {
+                if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
                     show({
                         title: "Carregamento de Pontos",
                         msg: response.message
@@ -647,7 +647,7 @@
             dataType: "json",
             success: function(response) {
 
-                if (response.hasOwnProperty("message") && response.message.indexOf("<br>[ERRO]") === 0) {
+                if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
                     show({
                         title: "Inclusão de usuário",
                         msg: response.message
@@ -765,7 +765,7 @@
             dataType: "json",
             success: function(response) {
 
-                if (response.hasOwnProperty("message") && response.message.indexOf("<br>[ERRO]") === 0) {
+                if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
                     show({
                         title: "Carregamento de Detalhes",
                         msg: response.message

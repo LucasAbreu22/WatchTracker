@@ -18,10 +18,38 @@ define("CONNECT_CONFIG", [
     ]
 ]);
 
-/**
- * @param string $path
- * @return string
- */
+$tempoSessao = 60 * 20;
+
+ini_set('session.gc_maxlifetime', $tempoSessao);
+ini_set("session.cookie_lifetime", $tempoSessao);
+
+session_start();
+
+function checkRouteSession()
+{
+    // VERIFICAR A ROTA DA APLICAÇÃO
+    if (str_contains(getRoute(), "route=/error/")) // CASO A ROTA SEJA A DE ERRO, RETORNE FALSO
+    {
+        return false;
+    }
+    switch (getRoute()) {
+        case 'route=/login': // CASO A ROTA SEJA DE LOGIN
+            // VERIFIQUE SE EXISTE A SESSÃO USUÁRIO
+            // SE EXISTIR, REDIRECIONE PARA A HOME DO SISTEMA. SE NÃO RETORNE NADA
+            return isset($_SESSION["usuario"]) ? redirect(url("/painel")) : false;
+
+        case '': // CASO A ROTA SEJA A RAIZ, FAÇA NADA
+
+        case 'route=/contato': // CASO A ROTA SEJA A DE CONTATO, FAÇA NADA            
+            break;
+
+        default: // CASO A ROTA SEJA QUALQUER OUTRA
+            // VERIFIQUE SE EXISTE A SESSÃO USUÁRIO
+            // SE NÃO EXISTIR, REDIRECIONE PARA A PÁGINA DE LOGIN DO SISTEMA. SE NÃO RETORNE NADA
+            return !isset($_SESSION["usuario"]) ? redirect(url("/login")) :  true;
+            break;
+    }
+}
 
 function url(string $path): string
 {

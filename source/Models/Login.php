@@ -88,37 +88,71 @@ class Login
     {
         if (empty($senha)) throw new Exception("[ERRO][Login Clss 06] Informação de SENHA vazia!");
 
-        $this->senha = password_hash($senha, PASSWORD_DEFAULT);;
+        $this->senha = $senha;
     }
 
     public function logar()
     {
         $usuarioDAO = new UsuarioDAO();
         $login = $usuarioDAO->getUsuarioByEmail($this->email);
+        if ($login && password_verify($this->senha, $login->senha) === true) {
+            if (password_needs_rehash($login->senha, PASSWORD_DEFAULT)) {
+                $novoHash = password_hash($this->senha, PASSWORD_DEFAULT);
+                $usuarioDAO->atualizarSenha($login->id_usuario, $novoHash);
+            }
 
-        if ($login && password_verify($this->senha, $login->senha)) {
             $_SESSION["id_usuario"] = $login->id_usuario;
             $_SESSION["nome"] = $login->nome;
 
-            $callback["message"] = "LOGAR";
+            return "LOGAR";
         } else {
-            throw new Exception("[ERRO] E-MAIL ou SENHA inválida");
+            throw new Exception("[ERRO][Login Clss 14] E-MAIL ou SENHA inválida");
         }
     }
 
-    public function criarConta()
+    public function logoff()
+    {
+        try {
+            if (session_destroy()) return $callback["message"] = "LOGOFF";
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Login Clss 13] " . $e->getMessage());
+        }
+    }
+
+    public function criarUsuario()
     {
         $usuarioDAO = new UsuarioDAO();
-        $rsDAO = $usuarioDAO->criar($this->cpf, $this->email, $this->matricula, $this->nome, $this->senha);
+
+        if ($usuarioDAO->getUsuarioByEmail($this->email)) throw new Exception("[ERRO][Login Clss 09] E-MAIL já está em uso!");
+        if ($usuarioDAO->getUsuarioByCpf($this->cpf)) throw new Exception("[ERRO][Login Clss 10] CPF já está em uso!");
+
+        $hash = password_hash($this->senha, PASSWORD_DEFAULT);
+        $rsDAO = $usuarioDAO->criar($this->cpf, $this->email, $this->matricula, $this->nome, $hash);
 
         if ($rsDAO) {
-            return $callback["message"] = "Conta criada com sucesso!";
+            return $callback["message"] = "Usuário criada com sucesso!";
+        }
+    }
+
+    public function editarUsuario()
+    {
+        $usuarioDAO = new UsuarioDAO();
+        $usuario = $usuarioDAO->getUsuarioByEmail($this->email);
+        if ($usuario && $usuario->id_usuario !== $this->id_usuario) throw new Exception("[ERRO][Login Clss 11] E-MAIL já está em uso!");
+
+        $usuario = $usuarioDAO->getUsuarioByCpf($this->cpf);
+        if ($usuario && $usuario->cpf !== $this->cpf) throw new Exception("[ERRO][Login Clss 12] CPF já está em uso!");
+
+        $hash = password_hash($this->senha, PASSWORD_DEFAULT);
+        $rsDAO = $usuarioDAO->editar($this->cpf, $this->email, $this->matricula, $this->nome, $hash);
+
+        if ($rsDAO) {
+            return $callback["message"] = "Usuário editado com sucesso!";
         }
     }
 
     function validarCPF($cpf)
     {
-
         $cpf = preg_replace('/[^0-9]/is', '', $cpf);
 
         if (strlen($cpf) != 11) {
