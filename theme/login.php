@@ -56,8 +56,8 @@
             },
             dataType: "json",
             success: function(response) {
-
-                if (response.message.indexOf("[ERRO]") !== 0) window.location.href = "<?= url("/"); ?>";
+                console.log(response)
+                if (response === "LOGAR") window.location.href = "<?= url("/"); ?>";
                 else alert(response.message);
             }
         });
