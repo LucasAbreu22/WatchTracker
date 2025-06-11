@@ -2,12 +2,10 @@
 
 namespace Source\Models;
 
-use DateTime;
 use Exception;
-use Source\DAO\PontoDAO;
 use Source\DAO\UsuarioDAO;
 
-class Login
+class Usuario
 {
     private ?int $id_usuario;
     private string $cpf;
@@ -28,7 +26,7 @@ class Login
 
     public function setIdUsuario(?int $id_usuario)
     {
-        if ($id_usuario <= 0) throw new Exception("[ERRO][Login Clss 01] Informação de ID de usuário inválida!");
+        if ($id_usuario <= 0) throw new Exception("[ERRO][Usuario Clss 01] Informação de ID de usuário inválida!");
 
         $this->id_usuario = $id_usuario;
     }
@@ -40,8 +38,8 @@ class Login
 
     public function setCpf(string $cpf)
     {
-        if (empty($cpf)) throw new Exception("[ERRO][Login Clss 02] Informação de CPF vazia!");
-        if (!$this->validarCPF($cpf)) throw new Exception("[ERRO][Login Clss 08] Informação de CPF inválida!");
+        if (empty($cpf)) throw new Exception("[ERRO][Usuario Clss 02] Informação de CPF vazia!");
+        if (!$this->validarCPF($cpf)) throw new Exception("[ERRO][Usuario Clss 08] Informação de CPF inválida!");
         $this->cpf = $cpf;
     }
 
@@ -52,8 +50,8 @@ class Login
 
     public function setEmail(string $email)
     {
-        if (empty($email)) throw new Exception("[ERRO][Login Clss 03] Informação de E-MAIL vazia!");
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new Exception("[ERRO][Login Clss 07] Informação de E-MAIL inválida!");
+        if (empty($email)) throw new Exception("[ERRO][Usuario Clss 03] Informação de E-MAIL vazia!");
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new Exception("[ERRO][Usuario Clss 07] Informação de E-MAIL inválida!");
 
         $this->email = $email;
     }
@@ -75,7 +73,7 @@ class Login
 
     public function setNome(string $nome)
     {
-        if (empty($nome)) throw new Exception("[ERRO][Login Clss 05] Informação de NOME vazia!");
+        if (empty($nome)) throw new Exception("[ERRO][Usuario Clss 05] Informação de NOME vazia!");
         $this->nome = $nome;
     }
 
@@ -86,7 +84,7 @@ class Login
 
     public function setSenha(string $senha)
     {
-        if (empty($senha)) throw new Exception("[ERRO][Login Clss 06] Informação de SENHA vazia!");
+        if (empty($senha)) throw new Exception("[ERRO][Usuario Clss 06] Informação de SENHA vazia!");
 
         $this->senha = $senha;
     }
@@ -106,7 +104,7 @@ class Login
 
             return "LOGAR";
         } else {
-            throw new Exception("[ERRO][Login Clss 14] E-MAIL ou SENHA inválida");
+            throw new Exception("[ERRO][Usuario Clss 14] E-MAIL ou SENHA inválida");
         }
     }
 
@@ -115,7 +113,7 @@ class Login
         try {
             if (session_destroy()) return $callback["message"] = "LOGOFF";
         } catch (\Throwable $e) {
-            throw new Exception("[ERRO][Login Clss 13] " . $e->getMessage());
+            throw new Exception("[ERRO][Usuario Clss 13] " . $e->getMessage());
         }
     }
 
@@ -123,8 +121,8 @@ class Login
     {
         $usuarioDAO = new UsuarioDAO();
 
-        if ($usuarioDAO->getUsuarioByEmail($this->email)) throw new Exception("[ERRO][Login Clss 09] E-MAIL já está em uso!");
-        if ($usuarioDAO->getUsuarioByCpf($this->cpf)) throw new Exception("[ERRO][Login Clss 10] CPF já está em uso!");
+        if ($usuarioDAO->getUsuarioByEmail($this->email)) throw new Exception("[ERRO][Usuario Clss 09] E-MAIL já está em uso!");
+        if ($usuarioDAO->getUsuarioByCpf($this->cpf)) throw new Exception("[ERRO][Usuario Clss 10] CPF já está em uso!");
 
         $hash = password_hash($this->senha, PASSWORD_DEFAULT);
         $rsDAO = $usuarioDAO->criar($this->cpf, $this->email, $this->matricula, $this->nome, $hash);
@@ -138,10 +136,10 @@ class Login
     {
         $usuarioDAO = new UsuarioDAO();
         $usuario = $usuarioDAO->getUsuarioByEmail($this->email);
-        if ($usuario && $usuario->id_usuario !== $this->id_usuario) throw new Exception("[ERRO][Login Clss 11] E-MAIL já está em uso!");
+        if ($usuario && $usuario->id_usuario !== $this->id_usuario) throw new Exception("[ERRO][Usuario Clss 11] E-MAIL já está em uso!");
 
         $usuario = $usuarioDAO->getUsuarioByCpf($this->cpf);
-        if ($usuario && $usuario->cpf !== $this->cpf) throw new Exception("[ERRO][Login Clss 12] CPF já está em uso!");
+        if ($usuario && $usuario->cpf !== $this->cpf) throw new Exception("[ERRO][Usuario Clss 12] CPF já está em uso!");
 
         $hash = password_hash($this->senha, PASSWORD_DEFAULT);
         $rsDAO = $usuarioDAO->editar($this->cpf, $this->email, $this->matricula, $this->nome, $hash);
@@ -149,6 +147,14 @@ class Login
         if ($rsDAO) {
             return $callback["message"] = "Usuário editado com sucesso!";
         }
+    }
+
+    public function getFerias()
+    {
+        if (empty($this->id_usuario)) throw new Exception("[ERRO][Usuario Clss 13] ID usuário vazio!");
+
+        $usuarioDAO = new UsuarioDAO();
+        return $usuarioDAO->getFerias($this->id_usuario);
     }
 
     function validarCPF($cpf)

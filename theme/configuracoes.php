@@ -1,4 +1,5 @@
 <?php $this->layout("_theme", ["title" => $title]); ?>
+
 <a href="<?= url("/") ?>" class="nav-config">
     <h2>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -37,7 +38,7 @@
             </div>
 
             <div class="button-container">
-                <button>Salvar</button>
+                <button class="btn">Salvar</button>
             </div>
         </form>
     </div>
@@ -64,7 +65,7 @@
                 <input type="time" name="saida" id="saida" required>
             </div>
             <div class="button-container">
-                <button>Salvar</button>
+                <button class="btn">Salvar</button>
             </div>
         </form>
     </div>
@@ -83,8 +84,10 @@
                     <input type="date" id="ferias-fim" value="2025-01-01" required>
                 </div>
                 <div>
-                    <div class="btn_circular">
-                        <span> + </span>
+                    <div class="btn btn_circular">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -96,17 +99,18 @@
                 <div class="ferias-marcadas">
                     <p>07/06/2025 - 07/07/2025 (Pendente)</p>
                     <div class="acoes">
-                        <div class="btn_circular btn-lixeira" onclick="">
+                        <div class="btn btn-quadrado" onclick="">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                 <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1 0 32c0 8.8 7.2 16 16 16l32 0zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z" />
                             </svg>
                         </div>
-                        <div class="btn_circular btn-lixeira" onclick="">
+                        <div class="btn btn-quadrado" onclick="">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                 <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
                             </svg>
                         </div>
                     </div>
+                </div>
             </li>
         </ul>
     </div>
@@ -116,6 +120,64 @@
 
 <?php $this->start("js"); ?>
 <script>
-    $(document).ready(function() {});
+    $(document).ready(function() {
+        carregarFerias();
+    });
+
+    function carregarFerias() {
+        $.ajax({
+            type: "POST",
+            url: "<?= url("/configuracoes/carregarFerias") ?>",
+            dataType: "json",
+            success: function(response) {
+
+                if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
+                    show({
+                        title: "Carregamento de Pontos",
+                        msg: response.message
+                    });
+
+                    return false;
+                }
+
+                let html = "";
+
+                response.forEach(ferias => {
+                    let status = "(Pendente)";
+
+                    let dataAtual = new Date();
+                    let dataAtualFormat = new Date(dataAtual.getFullYear() + "-" + dataAtual.getMonth() + "-" + dataAtual.getDate());
+
+                    let dataFeriasFim = ferias.fim.split("/");
+                    let dataFeriasFimFormat = new Date(dataFeriasFim[2], dataFeriasFim[1] - 1, dataFeriasFim[0]);
+
+                    if (dataAtual > dataFeriasFimFormat) status = "(Concluída)";
+
+                    html += `
+                    <li>
+                        <div class="ferias-marcadas">
+                            <p>${ferias.inicio} - ${ferias.fim} ${status}</p>
+                            <div class="acoes">
+                                <div class="btn btn_circular btn-quadrado" onclick="editarFerias(${ferias.id_ferias})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                                        <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1 0 32c0 8.8 7.2 16 16 16l32 0zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z" />
+                                    </svg>
+                                </div>
+                                <div class="btn btn_circular btn-quadrado" onclick="excluirFerias(${ferias.id_ferias}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                                        <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    `;
+
+                });
+
+                $("#ferias-marcadas-lista").html(html)
+            }
+        });
+    }
 </script>
 <?php $this->end("js"); ?>

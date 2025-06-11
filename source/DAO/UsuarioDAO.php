@@ -63,6 +63,23 @@ class UsuarioDAO
         }
     }
 
+    public function getFerias(int $id_usuario)
+    {
+        try {
+            $sql = "SELECT 
+            id_ferias, DATE_FORMAT(inicio, '%d/%m/%Y') as inicio, DATE_FORMAT(fim, '%d/%m/%Y') as fim, id_usuario 
+            FROM ferias WHERE id_usuario = ? ";
+
+            $stmt = $this->connect->prepare($sql);
+            $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+            /* $stmt->debugDumpParams(); */
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Usuario DAO 06] " . $e->getMessage());
+        }
+    }
+
     public function criar(string $cpf, string $email, ?string $matricula, string $nome, string $senha)
     {
         try {

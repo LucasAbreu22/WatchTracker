@@ -66,9 +66,10 @@ button {
 }
 
 .content {
+  width: 90%;
+  max-width: 1920px;
   place-self: center;
   place-items: center;
-  width: 80%;
 }
 
 .disable {
@@ -80,7 +81,7 @@ label {
 }
 
 #cabecalho {
-  width: calc(100% - 19px);
+  width: 100%;
   align-items: center;
 }
 
@@ -137,6 +138,14 @@ label {
   height: 1px;
   background: #ffffff40;
   margin-top: 7px;
+}
+
+.btn {
+  background-color: var(--main-color);
+  color: white;
+  border: 3px solid #00000057;
+  box-shadow: 0 4px 4px #00000029;
+  cursor: pointer;
 }
 
 #resumo_mes {
@@ -243,18 +252,14 @@ label {
   justify-content: center;
   align-items: center;
   background-color: var(--clr-principal);
-  border: 5px solid #0000004d;
   border-radius: 50px;
-  box-shadow: 0 4px 4px #00000029;
-  cursor: pointer;
   margin-top: 2px;
-  font-size: 25px;
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
 }
 
-.btn_circular span {
-  margin-top: -5px;
+.btn_circular svg {
+  width: 80%;
 }
 
 .btn_add_observacao {
@@ -268,11 +273,12 @@ label {
 .pontos_batidos {
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 100%;
   height: 100%;
   font-size: 18px;
   padding-left: 15px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .pontos_batidos::-webkit-scrollbar {
@@ -293,7 +299,7 @@ label {
 .pontos_batidos div {
   display: flex;
   justify-content: space-between;
-  width: 160px;
+  width: 95%;
 }
 
 .pontos_batidos .observacao span {
@@ -436,19 +442,22 @@ input[type="date"] {
   width: 56px !important;
   height: 56px !important;
 }
-
-.btn-grande span {
-  margin-top: -10px;
-}
-
 .btn-grande svg {
-  width: 60%;
+  width: 70%;
 }
 
-.btn-lixeira {
-  width: 25px;
+.btn-quadrado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 26px;
+  height: 26px;
   padding: 2px;
   border-radius: 5px !important;
+}
+
+.btn-quadrado svg {
+  width: 80%;
 }
 
 .registro_ponto {
@@ -658,16 +667,10 @@ button {
 
 #confirmar,
 form button {
-  background-color: var(--main-color);
-  color: white;
   border: none;
-  border-radius: var(--border-radius);
   padding: 10px 0;
   width: 100%;
   font-size: 16px;
-  cursor: pointer;
-  border: 2px solid #00000057;
-  box-shadow: 0 4px 4px #00000029;
   transition: background-color 0.3s;
 }
 
@@ -776,6 +779,11 @@ ul {
   border: 2px solid var(--clr-bck-popup);
 }
 
+.nav-config {
+  position: absolute;
+  left: 50px;
+}
+
 .nav-config h2 {
   display: flex;
   align-items: center;
@@ -815,4 +823,129 @@ ul {
 .content-login a {
   font-size: 14px;
   text-decoration: underline;
+}
+
+@media (max-width: 1920px) {
+  html {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .content {
+    width: 90%;
+  }
+
+  #cabecalho h1 {
+    font-size: 26px;
+  }
+  #cabecalho span {
+    font-size: 20px;
+  }
+
+  .acoes h1 {
+    margin-top: -5px;
+    font-size: 30px;
+  }
+
+  .dia_card {
+    height: 115px;
+  }
+}
+
+@media (max-width: 1633px) {
+  html {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  #cabecalho h1 {
+    font-size: 22px;
+  }
+  #cabecalho span {
+    font-size: 18px;
+  }
+
+  #cabecalho a {
+    font-size: 12px;
+  }
+
+  #mes_nav {
+    width: 250px;
+  }
+
+  #dia_coluna h1 {
+    font-size: 24px;
+  }
+
+  .dia_card .acoes .btn_circular {
+    width: 25px;
+    height: 25px;
+  }
+
+  .dia_card {
+    height: 105px;
+  }
+
+  .pontos_batidos {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 1366px) {
+  html {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  #cabecalho h1 {
+    font-size: 18px;
+  }
+  #cabecalho span {
+    font-size: 14px;
+  }
+
+  #cabecalho a {
+    font-size: 12px;
+  }
+
+  #mes_nav {
+    width: 250px;
+  }
+
+  #mes_nav button {
+    font-size: 15px;
+  }
+
+  #dia_coluna h1 {
+    font-size: 24px;
+  }
+
+  .dia_card {
+    height: 80px;
+  }
+
+  .acoes h1 {
+    margin-top: -3px;
+    font-size: 22px;
+  }
+
+  .dia_card .acoes .btn_circular {
+    margin-top: 0;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .btn_circular span {
+    margin-top: -3px;
+  }
+
+  .btn_add_observacao {
+    width: 16px;
+    height: 16px;
+    margin-left: 2px;
+  }
+
+  .pontos_batidos {
+    font-size: 11px;
+  }
 }

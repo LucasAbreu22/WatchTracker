@@ -14,7 +14,7 @@
         </div>
         <a href="<?= url("/login/criarUsuario") ?>">Criar conta?</a>
         <div class="button-container">
-            <button>Logar</button>
+            <button class="btn">Logar</button>
         </div>
     </form>
 </div>
@@ -56,7 +56,7 @@
             },
             dataType: "json",
             success: function(response) {
-                console.log(response)
+
                 if (response === "LOGAR") window.location.href = "<?= url("/"); ?>";
                 else alert(response.message);
             }

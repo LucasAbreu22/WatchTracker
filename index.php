@@ -30,6 +30,7 @@ $router->post("/getDetalhes", "Pontos:getDetalhes");
 
 $router->group("configuracoes");
 $router->get("/", "Web:configuracoes");
+$router->post("/carregarFerias", "Configuracoes:carregarFerias");
 
 $router->group("login");
 $router->get("/", "Web:login");

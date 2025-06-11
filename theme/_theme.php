@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?= $title; ?></title>
-
+    <link rel="icon" href="<?= url("/theme/assets/img/clock_icon.svg") ?>" type="image/svg+xml">
     <link rel="icon" type="image/x-icon" href="<?= url("/theme/assets/img/icon-SAAGI.png"); ?>">
 
     <link rel="stylesheet" href="<?= url("/theme/assets/css/plugin/fonts-awesome.all.min.css") ?>">

@@ -27,7 +27,7 @@
         </div>
         <br>
         <div class="button-container">
-            <button>Criar</button>
+            <button class="btn">Criar</button>
         </div>
     </form>
 </div>

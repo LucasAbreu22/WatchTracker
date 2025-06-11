@@ -2,18 +2,18 @@
 
 namespace Source\App;
 
-use Source\Models\Ponto;
-
+use Source\Models\Usuario;
 
 class Configuracoes
 {
-    public function getConfiguracoes($param): void
+    public function carregarFerias($param): void
     {
         try {
 
-            $ponto = new Ponto();
+            $usuario = new Usuario();
 
-            $callback = $ponto->getPontos($param);
+            $usuario->setIdUsuario($_SESSION["id_usuario"]);
+            $callback = $usuario->getFerias();
 
             echo json_encode($callback);
         } catch (\Throwable $e) {
