@@ -19,13 +19,14 @@
 
     <script src="<?= url("/theme/assets/plugins/xModal/xModal.js") ?>" type="text/javascript"></script>
     <link rel="stylesheet" href="<?= url("/theme/assets/plugins/xModal/xModal.css") ?>">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <link rel="stylesheet" href="<?= url("/theme/assets/css/styles.css"); ?>" />
 </head>
 
 <body>
     <main>
-        <div class="content">
+        <div class="content" id="app">
             <?= $this->section("content"); ?>
         </div>
     </main>

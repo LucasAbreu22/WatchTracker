@@ -1,7 +1,7 @@
 <?php
 
 // define("URL_BASE", "http://10.120.1.125/WatchTracker");
-define("URL_BASE", "http://localhost/WatchTracker");
+define("URL_BASE", "http://localhost/WatchTrackerVue");
 
 define("CONNECT_CONFIG", [
     "driver" => "mysql",

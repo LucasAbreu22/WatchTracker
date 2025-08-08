@@ -97,7 +97,7 @@ class Ponto
         return ["inicio_periodo" => $inicio_periodo, "final_periodo" => $final_periodo];
     }
 
-    public function calcularDia(array $pontos)
+    public function calcularDia(?array $pontos)
     {
 
         try {
@@ -106,40 +106,42 @@ class Ponto
             $tempo_intervalo = "00:00";
             $periodos = [];
 
-            for ($i = 0; $i < count($pontos); $i++) {
-                if (isset($pontos[$i + 1])) {
-                    $data1 = new DateTime($pontos[$i]['dia'] . " " . $pontos[$i]['horario']);
-                    $data2 = new DateTime($pontos[$i + 1]['dia'] . " " . $pontos[$i + 1]['horario']);
+            if ($pontos != null) {
+                for ($i = 0; $i < count($pontos); $i++) {
+                    if (isset($pontos[$i + 1])) {
+                        $data1 = new DateTime($pontos[$i]['dia'] . " " . $pontos[$i]['horario']);
+                        $data2 = new DateTime($pontos[$i + 1]['dia'] . " " . $pontos[$i + 1]['horario']);
 
-                    if ($pontos[$i]['intervalo'] == 1 && $i % 2 === 1) $tempo_intervalo = $data1->diff($data2)->format('%Hh%I');
+                        if ($pontos[$i]['intervalo'] == 1 && $i % 2 === 1) $tempo_intervalo = $data1->diff($data2)->format('%Hh%I');
 
-                    $periodos[] = ["periodo" => [$pontos[$i]['horario'], $pontos[$i + 1]['horario']], "tempo" => $data1->diff($data2)->format('%H:%I')];
+                        $periodos[] = ["periodo" => [$pontos[$i]['horario'], $pontos[$i + 1]['horario']], "tempo" => $data1->diff($data2)->format('%H:%I')];
+                    }
                 }
-            }
-            for ($i = 0; $i < count($periodos); $i++) {
-                if ($i % 2 === 0) {
-                    $tempo_trabalhado = explode(":", $tempo_trabalhado);
-                    $horario = explode(":", $periodos[$i]["tempo"]);
+                for ($i = 0; $i < count($periodos); $i++) {
+                    if ($i % 2 === 0) {
+                        $tempo_trabalhado = explode(":", $tempo_trabalhado);
+                        $horario = explode(":", $periodos[$i]["tempo"]);
 
-                    $tempo_trabalhado[0] = intval($tempo_trabalhado[0]) + intval($horario[0]);
-                    $tempo_trabalhado[1] = intval($tempo_trabalhado[1]) + intval($horario[1]);
+                        $tempo_trabalhado[0] = intval($tempo_trabalhado[0]) + intval($horario[0]);
+                        $tempo_trabalhado[1] = intval($tempo_trabalhado[1]) + intval($horario[1]);
 
-                    $tempo_trabalhado = $tempo_trabalhado[0] . ":" . $tempo_trabalhado[1];
+                        $tempo_trabalhado = $tempo_trabalhado[0] . ":" . $tempo_trabalhado[1];
+                    }
                 }
+
+                $tempo_trabalhado = explode(":", $tempo_trabalhado); // Ex: "2:85"
+                $hora = (int)$tempo_trabalhado[0];
+                $minuto = (int)$tempo_trabalhado[1];
+
+                // Converte todos os minutos para o total
+                $minutosTotais = ($hora * 60) + $minuto;
+
+                // Agora converte de volta para horas + minutos formatado
+                $horasFinais = floor($minutosTotais / 60);
+                $minutosFinais = $minutosTotais % 60;
+
+                $tempo_trabalhado = sprintf('%02dh%02d', $horasFinais, $minutosFinais);
             }
-
-            $tempo_trabalhado = explode(":", $tempo_trabalhado); // Ex: "2:85"
-            $hora = (int)$tempo_trabalhado[0];
-            $minuto = (int)$tempo_trabalhado[1];
-
-            // Converte todos os minutos para o total
-            $minutosTotais = ($hora * 60) + $minuto;
-
-            // Agora converte de volta para horas + minutos formatado
-            $horasFinais = floor($minutosTotais / 60);
-            $minutosFinais = $minutosTotais % 60;
-
-            $tempo_trabalhado = sprintf('%02dh%02d', $horasFinais, $minutosFinais);
 
             return ["periodos" => $periodos, "tempo_intervalo" => $tempo_intervalo, "tempo_trabalhado" => $tempo_trabalhado];
         } catch (\Throwable $e) {

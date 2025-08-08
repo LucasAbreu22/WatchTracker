@@ -27,7 +27,7 @@ class Pontos
 
             $ponto = new Ponto();
 
-            $callback = $ponto->calcularDia($param["pontos"]);
+            $callback = $ponto->calcularDia(isset($param["pontos"]) ? $param["pontos"] : null);
 
             echo json_encode($callback);
         } catch (\Throwable $e) {

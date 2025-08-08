@@ -106,11 +106,13 @@ label {
 }
 
 .dropdown {
-  display: none;
+  display: block;
   position: absolute;
   background: var(--clr-bck-popup);
   padding: 10px 30px;
   width: 245px;
+  top: 6%;
+  left: 8%;
   text-align: center;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -258,7 +260,7 @@ label {
   height: 30px;
 }
 
-.btn_circular svg {
+.btn svg {
   width: 80%;
 }
 
@@ -316,27 +318,37 @@ label {
 
 #popup_dia {
   display: none;
+  position: absolute;
+}
+
+.popup_dia {
   background-color: var(--clr-bck-popup);
   border-radius: 5px;
   padding: 10px;
 }
 
-#popup_dia .content {
+.popup_dia .content {
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  width: 100%;
+  padding: 5px;
 }
 
-#popup_dia .content div {
+.popup_dia .content div {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-#popup_dia .content table td {
-  outline: 1px solid #000;
+.popup_dia .content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.popup_dia .content table td {
+  border: 1px solid #000;
   padding: 5px;
 }
 
@@ -345,7 +357,7 @@ label {
 }
 
 .overlay {
-  display: none;
+  display: block;
   background-color: #0000006b;
   position: fixed;
   top: 0;
@@ -356,9 +368,10 @@ label {
 }
 
 .popup {
-  display: none;
-  height: 633px;
-  width: 585px;
+  display: block;
+  min-height: 668px;
+  max-height: 762px;
+  width: 515px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -408,7 +421,7 @@ label {
 
 .tab-content {
   display: none;
-  padding: 36px 55px;
+  padding: 36px 40px;
   height: 100%;
   background-color: var(--clr-principal);
   color: var(--clr-sencund);
@@ -418,6 +431,10 @@ label {
   display: block;
 }
 
+.tab-content .popup_dia {
+  max-height: 275px;
+  overflow-y: auto;
+}
 #inputs_horarios,
 #acoes {
   display: flex;
@@ -425,16 +442,45 @@ label {
   align-items: end;
 }
 
+#inputs_horarios .btn {
+  position: relative;
+  top: 7px;
+  left: 20px;
+}
+
+hr {
+  width: 100%;
+  border: 1px solid;
+  margin: 25px 0 20px 0;
+}
+
 input[type="date"] {
-  width: 112px;
+  width: 114px;
 }
 
 #txt-hora {
   width: 58px;
 }
 
-.registro_ponto {
+#registros {
   display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: end;
+}
+
+#registros #acoes {
+  margin-right: 77px;
+  padding-bottom: 5px;
+}
+
+#btn-fechar-editar {
+  display: none;
+}
+
+.btn-medio {
+  width: 43px !important;
+  height: 43px !important;
 }
 
 .btn-grande {
@@ -442,8 +488,30 @@ input[type="date"] {
   width: 56px !important;
   height: 56px !important;
 }
-.btn-grande svg {
+
+.btn-grande svg,
+.btn-medio svg {
   width: 70%;
+}
+
+#interval_sign {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+
+.hora-ponto {
+  width: 57px;
+  font-size: 18px !important;
+  text-align: right;
+  padding: 0px 3px !important;
+}
+
+.hora-ponto-block {
+  background: transparent;
+  border: 1px solid transparent !important;
+  color: #fff !important;
 }
 
 .btn-quadrado {
@@ -463,9 +531,10 @@ input[type="date"] {
 .registro_ponto {
   display: flex;
   font-size: 18px;
-  display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-right: 5px;
+  margin-bottom: 4px;
 }
 
 .evento_hora {
@@ -476,6 +545,8 @@ input[type="date"] {
 
 #pontos_batidos_popup {
   width: 258px;
+  max-height: 156px;
+  overflow-y: auto;
 }
 
 #observacao h2 {
@@ -487,9 +558,11 @@ input[type="date"] {
   flex-direction: column;
   width: 100%;
   gap: 20px;
+  max-height: 334px;
+  overflow-y: auto;
 }
 
-.observacao {
+.observacao_item {
   display: grid;
   grid-template-areas:
     "dados acoes"
@@ -506,9 +579,12 @@ input[type="date"] {
   grid-area: acoes;
   justify-self: self-end;
   justify-content: center;
+  flex-direction: row;
+  width: auto;
+  gap: 5px;
 }
 
-.observacao::after {
+.observacao_item::after {
   content: "";
   display: flex;
   width: 100%;
@@ -764,16 +840,16 @@ ul {
   overflow-y: auto;
 }
 
-#ferias-marcadas-lista::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 9px;
 }
 
-#ferias-marcadas-lista::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: var(--clr-background);
   border-radius: 5px;
 }
 
-#ferias-marcadas-lista::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background-color: var(--clr-principal);
   border-radius: 20px;
   border: 2px solid var(--clr-bck-popup);
