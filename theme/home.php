@@ -145,14 +145,14 @@
                 </div>
                 <div>
                     <label for="txt-hora">Hora</label><br>
-                    <input type="text" name="hora" id="txt-hora" class="hora" placeholder="hh:mm" maxlength="5">
+                    <input type="time" name="hora" id="txt-hora" class="hora" placeholder="hh:mm" maxlength="5" :value="pontoInput" @input="coletarHora">
                 </div>
                 <div id="interval_sign">
                     <input type="checkbox" name="" id="chck-intervalo">
                     <label for="chck-intervalo">Intervalo</label>
                 </div>
                 <div>
-                    <div class="btn btn_circular btn-medio">
+                    <div class="btn btn_circular btn-medio" @click="adicionarPonto()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                             <path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 237.3C544 220.3 537.3 204 525.3 192L448 114.7C436 102.7 419.7 96 402.7 96L160 96zM192 192C192 174.3 206.3 160 224 160L384 160C401.7 160 416 174.3 416 192L416 256C416 273.7 401.7 288 384 288L224 288C206.3 288 192 273.7 192 256L192 192zM320 352C355.3 352 384 380.7 384 416C384 451.3 355.3 480 320 480C284.7 480 256 451.3 256 416C256 380.7 284.7 352 320 352z" />
                         </svg>
@@ -167,7 +167,10 @@
             <div id="registros">
                 <div id="acoes">
                     <div class="btn btn_circular btn-medio" @click="editarPontos('editar')">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" v-if="editarPontosAble"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                            <path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 237.3C544 220.3 537.3 204 525.3 192L448 114.7C436 102.7 419.7 96 402.7 96L160 96zM192 192C192 174.3 206.3 160 224 160L384 160C401.7 160 416 174.3 416 192L416 256C416 273.7 401.7 288 384 288L224 288C206.3 288 192 273.7 192 256L192 192zM320 352C355.3 352 384 380.7 384 416C384 451.3 355.3 480 320 480C284.7 480 256 451.3 256 416C256 380.7 284.7 352 320 352z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" v-else><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                             <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1 0 32c0 8.8 7.2 16 16 16l32 0zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z" />
                         </svg>
                     </div>
@@ -175,6 +178,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                             <path d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z" />
                         </svg>
+
                     </div>
                 </div>
                 <div id="pontos_batidos_popup">
@@ -183,7 +187,7 @@
                             {{ nomeEvento(ponto, idx) }}:
                         </div>
                         <div class="evento_hora">
-                            <input type="text" name="hora" id="" class="hora-ponto hora-ponto-block" placeholder="hh:mm" maxlength="5" :value="ponto.horario" disabled>
+                            <input type="text" name="hora" class="hora-ponto hora-ponto-block" placeholder="hh:mm" maxlength="5" :value="ponto.horario" disabled>
 
                             <div class="btn btn-quadrado" @click="excluirPonto(ponto.id_pontos_batidos)">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -420,9 +424,11 @@
             const obsDetalhes = ref([])
             let pontosDoDiaEscolhido = [];
 
-            let editarPontosAble = false;
+            const editarPontosAble = ref(false);
 
             let popupTimeout;
+
+            const pontoInput = ref(null);
 
             function getEventoTempo(horario) {
                 return horario.periodo_ini && horario.periodo_fim ? "Período" : "Carga horária";
@@ -721,9 +727,9 @@
             }
 
             function editarPontos(acao = null) {
-                editarPontosAble = !editarPontosAble;
+                editarPontosAble.value = !editarPontosAble.value;
 
-                if (editarPontosAble && acao === "editar") {
+                if (editarPontosAble.value && acao === "editar") {
                     $(".hora-ponto").removeAttr("disabled");
                     $(".hora-ponto").removeClass("hora-ponto-block");
                     $("#btn-fechar-editar").css({
@@ -731,7 +737,7 @@
                     });
 
                     $("#registros #acoes").css({
-                        "margin-right": "24px"
+                        "margin-right": "-1px"
                     })
                 } else {
 
@@ -742,13 +748,37 @@
                     $(".hora-ponto").attr("disabled", true);
                     $(".hora-ponto").addClass("hora-ponto-block");
                     $("#registros #acoes").css({
-                        "margin-right": "77px"
+                        "margin-right": "52px"
                     })
 
                     $("#btn-fechar-editar").css({
                         "display": "none"
                     });
                 }
+
+            }
+
+            function coletarHora(e) {
+                pontoInput.value = e.target.value;
+            }
+
+            function adicionarPonto() {
+
+                const founded = pontosDetalhes.value.find((ponto) => ponto.horario === pontoInput.value);
+                if (pontoInput.value && !founded) {
+                    pontosDetalhes.value.push({
+                        dia: dataDetalhes.value,
+                        horario: pontoInput.value
+                    });
+
+                    pontosDetalhes.value.sort((itemA, itemB) => itemA.horario.localeCompare(itemB.horario))
+                } else {
+                    console.log("FALSEs")
+                }
+            }
+
+            function excluirPonto(id_ponto) {
+                pontosDetalhes.value = pontosDetalhes.value.filter((ponto) => ponto.id_pontos_batidos !== id_ponto);
 
             }
 
@@ -779,6 +809,11 @@
                 fecharPopup,
                 openTab,
                 editarPontos,
+                pontoInput,
+                adicionarPonto,
+                coletarHora,
+                excluirPonto,
+                editarPontosAble
             };
         },
     }).mount("#app");

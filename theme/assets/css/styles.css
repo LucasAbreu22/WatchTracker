@@ -369,8 +369,7 @@ label {
 
 .popup {
   display: block;
-  min-height: 668px;
-  max-height: 762px;
+  height: 712px;
   width: 515px;
   position: absolute;
   top: 50%;
@@ -432,7 +431,7 @@ label {
 }
 
 .tab-content .popup_dia {
-  max-height: 275px;
+  height: 242px;
   overflow-y: auto;
 }
 #inputs_horarios,
@@ -459,7 +458,7 @@ input[type="date"] {
 }
 
 #txt-hora {
-  width: 58px;
+  width: 84px;
 }
 
 #registros {
@@ -470,7 +469,7 @@ input[type="date"] {
 }
 
 #registros #acoes {
-  margin-right: 77px;
+  margin-right: 52px;
   padding-bottom: 5px;
 }
 
@@ -530,10 +529,10 @@ input[type="date"] {
 
 .registro_ponto {
   display: flex;
+  width: 240px;
   font-size: 18px;
   align-items: center;
   justify-content: space-between;
-  padding-right: 5px;
   margin-bottom: 4px;
 }
 
@@ -544,8 +543,8 @@ input[type="date"] {
 }
 
 #pontos_batidos_popup {
-  width: 258px;
-  max-height: 156px;
+  width: 60%;
+  height: 156px;
   overflow-y: auto;
 }
 
@@ -558,7 +557,7 @@ input[type="date"] {
   flex-direction: column;
   width: 100%;
   gap: 20px;
-  max-height: 334px;
+  height: 395px;
   overflow-y: auto;
 }
 
