@@ -25,6 +25,7 @@ class Ponto
 
     public function setIdPonto(int $param)
     {
+        if (empty($param)) throw new Exception("<br>[ERRO][Ponto Clss 06] Informação de ID vazia!");
         if ($param < 0) throw new Exception("<br>[ERRO][Ponto Clss 01] Informação de ID inválida!");
 
         $this->id = $param;
@@ -54,12 +55,12 @@ class Ponto
         $this->dia = $param;
     }
 
-    public function getTafera()
+    public function getObservacao()
     {
         return $this->observacao;
     }
 
-    public function setTafera(array $param)
+    public function setObservacao(array $param)
     {
         return $this->observacao = $param;
     }
@@ -71,6 +72,20 @@ class Ponto
         if (!isset($param["ano"]) || $param["ano"] < 1950) throw new Exception("<br>[ERRO][Ponto Clss 05] Informação de ANO inválida!");
         $PontoDAO = new PontoDAO;
         return $PontoDAO->getPontos($this->criarPeriodo($param["mes"], $param["ano"]));
+    }
+
+    public function salvarHorario()
+    {
+
+        try {
+            if (empty($this->horario)) throw new Exception("<br>[ERRO][Ponto Clss 07] Informação de Horário vazia!");
+            if (empty($this->id)) throw new Exception("<br>[ERRO][Ponto Clss 08] Informação de ID vazia!");
+
+            $pontoDAO = new PontoDAO();
+            $callback = $pontoDAO->salvarHorario();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     private function criarPeriodo($mes, $ano)

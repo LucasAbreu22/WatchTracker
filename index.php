@@ -25,6 +25,7 @@ $router->namespace("Source\App");
 $router->group(null);
 $router->get("/", "Web:home");
 $router->post("/getPontos", "Pontos:getPontos");
+$router->post("/setPontos", "Pontos:setPontos");
 $router->post("/calcularDia", "Pontos:calcularDia");
 $router->post("/getDetalhes", "Pontos:getDetalhes");
 

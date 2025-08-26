@@ -187,7 +187,7 @@
                             {{ nomeEvento(ponto, idx) }}:
                         </div>
                         <div class="evento_hora">
-                            <input type="text" name="hora" class="hora-ponto hora-ponto-block" placeholder="hh:mm" maxlength="5" :value="ponto.horario" disabled>
+                            <input type="text" name="hora" class="hora-ponto hora-ponto-block" placeholder="hh:mm" maxlength="5" v-model="ponto.horario" :disabled="!editarPontosAble" />
 
                             <div class="btn btn-quadrado" @click="excluirPonto(ponto.id_pontos_batidos)">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -420,8 +420,9 @@
 
             const detalhesOpen = ref(false)
             const dataDetalhes = ref("2025-06-01")
-            const pontosDetalhes = ref([])
-            const obsDetalhes = ref([])
+            const pontosDetalhes = ref([]);
+            const pontosDetalhesBackup = ref([]);
+            const obsDetalhes = ref([]);
             let pontosDoDiaEscolhido = [];
 
             const editarPontosAble = ref(false);
@@ -730,7 +731,8 @@
                 editarPontosAble.value = !editarPontosAble.value;
 
                 if (editarPontosAble.value && acao === "editar") {
-                    $(".hora-ponto").removeAttr("disabled");
+                    pontosDetalhesBackup.value = JSON.parse(JSON.stringify(pontosDetalhes.value));
+
                     $(".hora-ponto").removeClass("hora-ponto-block");
                     $("#btn-fechar-editar").css({
                         "display": "flex"
@@ -743,9 +745,33 @@
 
                     if (acao === "editar") {
                         // SALVAR INFORMAÇÔES
+                        const updatedPontos = pontosDetalhes.value.filter((ponto, idx) => ponto.horario != pontosDetalhesBackup.value[idx].horario);
+                        $.ajax({
+                            type: "POST",
+                            url: "<?= url("/setPontos") ?>",
+                            data: {
+                                updatedPontos: updatedPontos
+                            },
+                            dataType: "json",
+                            success: function(response) {
+
+                                /* if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
+                                    show({
+                                        title: "Carregamento de Pontos",
+                                        msg: response.message
+                                    });
+
+                                    return false;
+                                }
+
+
+                                callback = response; */
+                            }
+                        });
+                    } else {
+                        pontosDetalhes.value = JSON.parse(JSON.stringify(pontosDetalhesBackup.value))
                     }
 
-                    $(".hora-ponto").attr("disabled", true);
                     $(".hora-ponto").addClass("hora-ponto-block");
                     $("#registros #acoes").css({
                         "margin-right": "52px"

@@ -17,51 +17,7 @@ class PontoDAO
         $this->connect = Connect::getInstance();
     }
 
-    public function getPontos($periodo)
-    {
-        try {
-            $sql = "SELECT id_pontos_batidos, 
-            DATE_FORMAT(horario, '%H:%i') as horario, 
-            dia, intervalo 
-            FROM pontos_batidos 
-            WHERE dia >= ? 
-            AND dia <= ? 
-            ORDER BY dia ASC, horario ASC";
 
-            $stmt = $this->connect->prepare($sql);
-            $stmt->bindValue(1, $periodo["inicio_periodo"], PDO::PARAM_STR);
-            $stmt->bindValue(2, $periodo["final_periodo"], PDO::PARAM_STR);
-            /* $stmt->debugDumpParams(); */
-            $stmt->execute();
-            return $stmt->fetchAll();
-        } catch (\Throwable $e) {
-            throw new Exception("[ERRO][Pontos DAO 01] " . $e->getMessage());
-        }
-    }
-
-    public function getDetalhesDia($data)
-    {
-        try {
-            $sql = "SELECT 
-            pb.id_pontos_batidos, pb.dia, DATE_FORMAT(pb.horario, '%H:%i') as horario, pb.intervalo, 
-            op.id_observacao, op.abono, op.observacao,
-            op.periodo_ini, op.periodo_fim, op.tempo
-            FROM pontos_batidos pb 
-            LEFT JOIN observacao_ponto op 
-            ON pb.id_pontos_batidos = op.id_pontos_batidos 
-            WHERE 
-            dia = ? 
-            ORDER BY horario ASC";
-
-            $stmt = $this->connect->prepare($sql);
-            $stmt->bindValue(1, $data, PDO::PARAM_STR);
-            /* $stmt->debugDumpParams(); */
-            $stmt->execute();
-            return $stmt->fetchAll();
-        } catch (\Throwable $e) {
-            throw new Exception("[ERRO][Pontos DAO 05] " . $e->getMessage());
-        }
-    }
 
     public function criar(string $exemplo)
     {
@@ -113,6 +69,91 @@ class PontoDAO
             return true;
         } catch (\Throwable $e) {
             throw new Exception("[ERRO][Pontos DAO 04] " . $e->getMessage());
+        }
+    }
+
+
+    public function getPontos($periodo)
+    {
+        try {
+            $sql = "SELECT id_pontos_batidos, 
+            DATE_FORMAT(horario, '%H:%i') as horario, 
+            dia, intervalo 
+            FROM pontos_batidos 
+            WHERE dia >= ? 
+            AND dia <= ? 
+            ORDER BY dia ASC, horario ASC";
+
+            $stmt = $this->connect->prepare($sql);
+            $stmt->bindValue(1, $periodo["inicio_periodo"], PDO::PARAM_STR);
+            $stmt->bindValue(2, $periodo["final_periodo"], PDO::PARAM_STR);
+            /* $stmt->debugDumpParams(); */
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Pontos DAO 01] " . $e->getMessage());
+        }
+    }
+
+    public function getDetalhesDia($data)
+    {
+        try {
+            $sql = "SELECT 
+            pb.id_pontos_batidos, pb.dia, DATE_FORMAT(pb.horario, '%H:%i') as horario, pb.intervalo, 
+            op.id_observacao, op.abono, op.observacao,
+            op.periodo_ini, op.periodo_fim, op.tempo
+            FROM pontos_batidos pb 
+            LEFT JOIN observacao_ponto op 
+            ON pb.id_pontos_batidos = op.id_pontos_batidos 
+            WHERE 
+            dia = ? 
+            ORDER BY horario ASC";
+
+            $stmt = $this->connect->prepare($sql);
+            $stmt->bindValue(1, $data, PDO::PARAM_STR);
+            /* $stmt->debugDumpParams(); */
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Pontos DAO 05] " . $e->getMessage());
+        }
+    }
+
+    public function criarHorario(string $dia, string $horario, int $intervalo)
+    {
+        try {
+
+            $sql = "INSERT INTO pontos_batidos (horario, dia, intervalo) VALUES (:horario, :dia, :intervalo)";
+            $stmt = $this->connect->prepare($sql);
+
+            /* $stmt->debugDumpParams(); */
+
+            $stmt->bindValue(":horario", $horario, PDO::PARAM_STR);
+            $stmt->bindValue(":dia", $dia, PDO::PARAM_STR);
+            $stmt->bindValue(":intervalo", $intervalo, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return true;
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Pontos DAO 02] " . $e->getMessage());
+        }
+    }
+
+    public function editarHorario(int $id_ponto, string $dia, string $horario, int $intervalo)
+    {
+        try {
+
+            $sql = "UPDATE pontos_batidos SET  horario, dia, intervalo";
+            $stmt = $this->connect->prepare($sql);
+
+            /* $stmt->debugDumpParams(); */
+
+            $stmt->bindValue(1, $exemplo, PDO::PARAM_STR);
+            $stmt->execute();
+
+            return true;
+        } catch (\Throwable $e) {
+            throw new Exception("[ERRO][Pontos DAO 02] " . $e->getMessage());
         }
     }
 }
