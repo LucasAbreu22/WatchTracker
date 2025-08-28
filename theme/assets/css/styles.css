@@ -458,7 +458,7 @@ input[type="date"] {
 }
 
 #txt-hora {
-  width: 84px;
+  width: 60px;
 }
 
 #registros {
@@ -501,7 +501,7 @@ input[type="date"] {
 }
 
 .hora-ponto {
-  width: 57px;
+  width: 60px;
   font-size: 18px !important;
   text-align: right;
   padding: 0px 3px !important;
@@ -898,6 +898,10 @@ ul {
 .content-login a {
   font-size: 14px;
   text-decoration: underline;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
 }
 
 @media (max-width: 1920px) {

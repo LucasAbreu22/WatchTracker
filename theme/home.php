@@ -148,7 +148,7 @@
                     <input type="time" name="hora" id="txt-hora" class="hora" placeholder="hh:mm" maxlength="5" :value="pontoInput" @input="coletarHora">
                 </div>
                 <div id="interval_sign">
-                    <input type="checkbox" name="" id="chck-intervalo">
+                    <input type="checkbox" id="chck-intervalo" v-model="intervaloChck" />
                     <label for="chck-intervalo">Intervalo</label>
                 </div>
                 <div>
@@ -187,7 +187,7 @@
                             {{ nomeEvento(ponto, idx) }}:
                         </div>
                         <div class="evento_hora">
-                            <input type="text" name="hora" class="hora-ponto hora-ponto-block" placeholder="hh:mm" maxlength="5" v-model="ponto.horario" :disabled="!editarPontosAble" />
+                            <input type="time" name="hora" class="hora hora-ponto hora-ponto-block" placeholder="hh:mm" maxlength="5" v-model="ponto.horario" :disabled="!editarPontosAble" />
 
                             <div class="btn btn-quadrado" @click="excluirPonto(ponto.id_pontos_batidos)">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -421,15 +421,16 @@
             const detalhesOpen = ref(false)
             const dataDetalhes = ref("2025-06-01")
             const pontosDetalhes = ref([]);
-            const pontosDetalhesBackup = ref([]);
+            let pontosDetalhesBackup = null;
             const obsDetalhes = ref([]);
-            let pontosDoDiaEscolhido = [];
+            let pontosDoDiaEscolhido = ref([]);
 
             const editarPontosAble = ref(false);
 
             let popupTimeout;
 
             const pontoInput = ref(null);
+            const intervaloChck = ref(false);
 
             function getEventoTempo(horario) {
                 return horario.periodo_ini && horario.periodo_fim ? "Período" : "Carga horária";
@@ -679,10 +680,10 @@
                 $(`.tab[onclick*="${tabClass}"]`).addClass('active');
                 $(`.${tabClass}`).addClass('active');
 
-                pontosDoDiaEscolhido.sort((a, b) => a.horario.localeCompare(b.horario));
+                pontosDetalhes.value.sort((a, b) => a.horario.localeCompare(b.horario));
 
-                pontosDetalhes.value = pontosDoDiaEscolhido
-                obsDetalhes.value = pontosDoDiaEscolhido.filter(item => item.observacao)
+                // pontosDetalhes.value = pontosDoDiaEscolhido.value
+                obsDetalhes.value = pontosDetalhes.value.filter(item => item.observacao)
 
             }
 
@@ -691,6 +692,8 @@
             }
 
             async function abrirPopup(aba, date) {
+
+                pontosDetalhes.value = JSON.parse(JSON.stringify(getPontosDia(date)));
                 detalhesOpen.value = true;
                 dataDetalhes.value = date;
 
@@ -712,7 +715,12 @@
                             return false;
                         }
 
-                        pontosDoDiaEscolhido = response;
+                        response.forEach((ponto) => {
+                            const founded = pontosDetalhes.value.filter((pontoReq) => pontoReq.id_pontos_batidos === ponto.id_pontos_batidos);
+
+                            if (!founded) pontosDetalhes.value.push(ponto);
+
+                        });
                     }
                 });
 
@@ -731,8 +739,7 @@
                 editarPontosAble.value = !editarPontosAble.value;
 
                 if (editarPontosAble.value && acao === "editar") {
-                    pontosDetalhesBackup.value = JSON.parse(JSON.stringify(pontosDetalhes.value));
-
+                    pontosDetalhesBackup = JSON.parse(JSON.stringify(pontosDetalhes.value));
                     $(".hora-ponto").removeClass("hora-ponto-block");
                     $("#btn-fechar-editar").css({
                         "display": "flex"
@@ -745,7 +752,12 @@
 
                     if (acao === "editar") {
                         // SALVAR INFORMAÇÔES
-                        const updatedPontos = pontosDetalhes.value.filter((ponto, idx) => ponto.horario != pontosDetalhesBackup.value[idx].horario);
+                        const updatedPontos = pontosDetalhes.value.filter((ponto, idx) => ponto.horario != pontosDetalhesBackup[idx].horario);
+
+                        let dia_ponts = getPontosDia(dataDetalhes.value);
+
+                        pontosDetalhesBackup = null
+
                         $.ajax({
                             type: "POST",
                             url: "<?= url("/setPontos") ?>",
@@ -755,7 +767,7 @@
                             dataType: "json",
                             success: function(response) {
 
-                                /* if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
+                                if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
                                     show({
                                         title: "Carregamento de Pontos",
                                         msg: response.message
@@ -764,12 +776,16 @@
                                     return false;
                                 }
 
-
-                                callback = response; */
+                                dia_ponts.forEach((ponto, idx) => {
+                                    if (idx < updatedPontos.length && ponto.id_pontos_batidos === updatedPontos[idx].id_pontos_batidos) ponto.horario = updatedPontos[idx].horario
+                                });
                             }
                         });
                     } else {
-                        pontosDetalhes.value = JSON.parse(JSON.stringify(pontosDetalhesBackup.value))
+                        dia_ponts = JSON.parse(JSON.stringify(pontosDetalhes.value));
+
+                        pontosDetalhes.value.splice(0, pontosDetalhes.value.length, ...JSON.parse(JSON.stringify(pontosDetalhesBackup)));
+                        pontosDetalhesBackup = null
                     }
 
                     $(".hora-ponto").addClass("hora-ponto-block");
@@ -792,14 +808,45 @@
 
                 const founded = pontosDetalhes.value.find((ponto) => ponto.horario === pontoInput.value);
                 if (pontoInput.value && !founded) {
-                    pontosDetalhes.value.push({
+
+                    let novo_ponto = {
                         dia: dataDetalhes.value,
-                        horario: pontoInput.value
+                        horario: pontoInput.value,
+                        intervalo: intervaloChck.value
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= url("/setPontos") ?>",
+                        data: {
+                            pontosList: [novo_ponto]
+                        },
+                        dataType: "json",
+                        success: function(response) {
+
+                            if (response.hasOwnProperty("message") && response.message.indexOf("[ERRO]") === 0) {
+                                show({
+                                    title: "Carregamento de Pontos",
+                                    msg: response.message
+                                });
+
+                                return false;
+                            }
+
+                            novo_ponto.id_pontos_batidos = response.new_id;
+
+                            pontosPorDia.value[`${novo_ponto.dia}`].push(novo_ponto);
+                            pontosPorDia.value[`${novo_ponto.dia}`].sort((itemA, itemB) => itemA.horario.localeCompare(itemB.horario));
+
+                            pontosDetalhes.value.push(novo_ponto);
+                            pontosDetalhes.value.sort((itemA, itemB) => itemA.horario.localeCompare(itemB.horario));
+
+                            pontoInput.value = "";
+                        }
                     });
 
-                    pontosDetalhes.value.sort((itemA, itemB) => itemA.horario.localeCompare(itemB.horario))
                 } else {
-                    console.log("FALSEs")
+                    alert("Não há hora para salvar");
                 }
             }
 
@@ -825,7 +872,6 @@
                 tempo_trabalhado,
                 tempo_intervalo,
                 periodos,
-                abrirPopup,
                 detalhesOpen,
                 dataDetalhes,
                 pontosDetalhes,
@@ -836,6 +882,7 @@
                 openTab,
                 editarPontos,
                 pontoInput,
+                intervaloChck,
                 adicionarPonto,
                 coletarHora,
                 excluirPonto,
@@ -856,7 +903,7 @@
 
         $("#data").val(diaEscolhido);
 
-        pontosDoDiaEscolhido.forEach((ponto, idx) => {
+        pontosDoDiaEscolhido.value.forEach((ponto, idx) => {
             let evento = "Entrada";
 
             if (ponto.intervalo === 1) {

@@ -25,19 +25,31 @@ class Pontos
     public function setPontos($param): void
     {
         try {
-            $updatedPontos = $param["updatedPontos"] ?? [];
+            $pontosList = $param["pontosList"] ?? [];
 
-            if (empty($updatedPontos)) {
+            if (empty($pontosList)) {
                 throw new Exception("Nenhum ponto encontrado!", 501);
             }
-            $ponto = new Ponto();
 
-            $ponto->setIdPonto($updatedPontos["id_pontos_batidos"]);
-            $ponto->setHorario($updatedPontos["horario"]);
-            $ponto->setDia($updatedPontos["dia"]);
-            $ponto->setObservacao($updatedPontos["id_observacao"]);
+            $callback = [];
+            $index = 0;
 
-            echo json_encode($$ponto->salvarHorario());
+            do {
+                $ponto = new Ponto();
+
+                if (isset($pontosList[$index]["id_pontos_batidos"])) $ponto->setIdPonto($pontosList[$index]["id_pontos_batidos"]);
+
+                $ponto->setHorario($pontosList[$index]["horario"]);
+                $ponto->setDia($pontosList[$index]["dia"]);
+                $ponto->setIntervalo($pontosList[$index]["intervalo"]);
+
+                $callback = $ponto->salvarHorario();
+
+                $index++;
+            } while ($index < count($pontosList));
+
+
+            echo json_encode($callback);
         } catch (\Throwable $e) {
             echo json_encode(["message" => $e->getMessage()]);
         }

@@ -131,29 +131,33 @@ class PontoDAO
             $stmt->bindValue(":horario", $horario, PDO::PARAM_STR);
             $stmt->bindValue(":dia", $dia, PDO::PARAM_STR);
             $stmt->bindValue(":intervalo", $intervalo, PDO::PARAM_INT);
+
             $stmt->execute();
 
-            return true;
+            return ["new_id" => $this->connect->lastInsertId()];
         } catch (\Throwable $e) {
-            throw new Exception("[ERRO][Pontos DAO 02] " . $e->getMessage());
+            throw new Exception("[ERRO][Pontos DAO 06] " . $e->getMessage());
         }
     }
 
-    public function editarHorario(int $id_ponto, string $dia, string $horario, int $intervalo)
+    public function editarHorario(int $id_pontos_batidos, string $dia, string $horario, int $intervalo)
     {
         try {
 
-            $sql = "UPDATE pontos_batidos SET  horario, dia, intervalo";
+            $sql = "UPDATE pontos_batidos SET horario = :horario, dia = :dia, intervalo = :intervalo WHERE id_pontos_batidos = :id_pontos_batidos";
             $stmt = $this->connect->prepare($sql);
 
+            $stmt->bindValue(":horario", $horario, PDO::PARAM_STR);
+            $stmt->bindValue(":dia", $dia, PDO::PARAM_STR);
+            $stmt->bindValue(":intervalo", $intervalo, PDO::PARAM_INT);
+            $stmt->bindValue(":id_pontos_batidos", $id_pontos_batidos, PDO::PARAM_INT);
             /* $stmt->debugDumpParams(); */
 
-            $stmt->bindValue(1, $exemplo, PDO::PARAM_STR);
             $stmt->execute();
 
-            return true;
+            return ["code" => 200, "message" => "Horário editado com sucesso!"];
         } catch (\Throwable $e) {
-            throw new Exception("[ERRO][Pontos DAO 02] " . $e->getMessage());
+            throw new Exception("[ERRO][Pontos DAO 07] " . $e->getMessage());
         }
     }
 }

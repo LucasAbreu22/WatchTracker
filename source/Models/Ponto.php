@@ -9,8 +9,9 @@ use Source\DAO\PontoDAO;
 class Ponto
 {
     private ?int $id;
-    private int $horario;
-    private int $dia;
+    private string $horario;
+    private string $dia;
+    private int|bool $intervalo;
     private array $observacao;
 
     function __construct()
@@ -60,6 +61,19 @@ class Ponto
         return $this->observacao;
     }
 
+    public function getIntervalo()
+    {
+        return $this->intervalo;
+    }
+
+    public function setIntervalo(int | bool $param)
+    {
+        if (empty($param) && $param != 0) throw new Exception("<br>[ERRO][Ponto Clss 06] Informação de INTERVALO vazia!");
+        if ($param < 0) throw new Exception("<br>[ERRO][Ponto Clss 01] Informação de INTERVALO inválida!");
+
+        $this->intervalo = $param;
+    }
+
     public function setObservacao(array $param)
     {
         return $this->observacao = $param;
@@ -77,15 +91,20 @@ class Ponto
     public function salvarHorario()
     {
 
-        try {
-            if (empty($this->horario)) throw new Exception("<br>[ERRO][Ponto Clss 07] Informação de Horário vazia!");
-            if (empty($this->id)) throw new Exception("<br>[ERRO][Ponto Clss 08] Informação de ID vazia!");
+        if (empty($this->horario)) throw new Exception("<br>[ERRO][Ponto Clss 07] Informação de Horário vazia!");
 
-            $pontoDAO = new PontoDAO();
-            $callback = $pontoDAO->salvarHorario();
-        } catch (\Throwable $th) {
-            //throw $th;
+        if (empty($this->dia)) throw new Exception("<br>[ERRO][Ponto Clss 08] Informação de DIA vazia!");
+
+        if (empty($this->intervalo) && $this->intervalo != 0) throw new Exception("<br>[ERRO][Ponto Clss 09] Informação de INTERVALO vazia!");
+        if ($this->intervalo < 0) throw new Exception("<br>[ERRO][Ponto Clss 10] Informação de INTERVALO inválida!");
+
+        $pontoDAO = new PontoDAO();
+        if (empty($this->id)) {
+            $callback = $pontoDAO->criarHorario($this->dia, $this->horario, $this->intervalo);
+        } else {
+            $callback = $pontoDAO->editarHorario($this->id, $this->dia, $this->horario, $this->intervalo);
         }
+        return $callback;
     }
 
     private function criarPeriodo($mes, $ano)
